@@ -11,8 +11,8 @@ function Square(props) {
   );
 }
 
-// This is an element creating board. 
-//All values and handlers we will keep in the parent`s state to have one source for the game 
+// This is an element creating board.
+//All values and handlers we will keep in the parent`s state to have one source for the game
 //and for the additional options.
 class Board extends React.Component {
   renderSquare(i) {
@@ -56,9 +56,15 @@ class Game extends React.Component {
           squares: Array(9).fill(null) //this is the future values for the cells
         }
       ],
-      stepNumber: 0, //this is for the step buttons and also history array get new records 
-                     //according to the number of step
-      xIsNext: true //when true player 'X' moves when false 'O' player
+      stepNumber: 0, //this is for the step buttons and also history array get new records
+      //according to the number of step
+      xIsNext: true, //when true player 'X' moves when false 'O' player
+      stepButtons: [
+        {
+          squareID: null,
+          focus: ""
+        }
+      ]
     };
   }
 
@@ -66,8 +72,20 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
     const squares = current.squares.slice();
-    //Blocks clickhandler if game has already ended or this cell already has a value
-    if (calculateWinner(squares) || squares[i]) {
+    const stepButtons = this.state.stepButtons.slice(0, this.state.stepNumber + 1);
+
+    //If a player clicks on a cell in which there is already a value - highlights the button containing that move  
+    if (squares[i]) {
+      focusStepButton(stepButtons, i);
+      this.setState({ stepButtons: stepButtons });
+      return
+    } else {
+      resetStepButtons(stepButtons);
+      this.setState({ stepButtons: stepButtons });
+    }
+
+    //Blocks clickhandler if game has already ended
+    if (calculateWinner(squares)) {
       return;
     }
     //Push new {squares: array} containing 'x' or 'o' in the certain cell to history array
@@ -80,7 +98,13 @@ class Game extends React.Component {
       ]),
       //Incerease step number and change player's turn
       stepNumber: history.length,
-      xIsNext: !this.state.xIsNext
+      xIsNext: !this.state.xIsNext,
+      stepButtons: stepButtons.concat([
+        {
+          squareID: i,
+          focus: ""
+        }
+      ])
     });
   }
 
@@ -96,12 +120,18 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
+    const stepButtons = this.state.stepButtons;
 
     const moves = history.map((step, move) => {
       const desc = move ? "Перейти к ходу #" + move : "К началу игры";
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button
+            onClick={() => this.jumpTo(move)}
+            className={stepButtons[move].focus}
+          >
+            {desc}
+          </button>
         </li>
       );
     });
@@ -128,9 +158,9 @@ class Game extends React.Component {
 }
 
 // This function checks if there are three values of "x" or "o" in a row or column.
-// It takes last history array as an attribute and searches equal 'x' or 'o' values in certain cells. 
+// It takes last history array as an attribute and searches equal 'x' or 'o' values in certain cells.
 // And if find - return it value.
-function calculateWinner(squares) {
+const calculateWinner = squares => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -148,7 +178,32 @@ function calculateWinner(squares) {
     }
   }
   return null;
-}
+};
+
+const focusStepButton = (stepButtons, i) => {
+  for (let x = stepButtons.length - 1; x >= 0; x--) {
+    if (stepButtons[x].squareID === i) {
+      stepButtons[x] = {
+        squareID: i,
+        focus: "focus"
+      };
+    } else {
+      stepButtons[x] = {
+        squareID: stepButtons[x].squareID,
+        focus: ""
+      };
+    }
+  }
+};
+
+const resetStepButtons = stepButtons => {
+  for (let x = stepButtons.length - 1; x >= 0; x--) {
+    stepButtons[x] = {
+      squareID: stepButtons[x].squareID,
+      focus: ""
+    };
+  }
+};
 
 // ========================================
 

@@ -44,9 +44,12 @@ ol, ul {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
 }
 
 .game-info {
   margin-left: 20px;
+}
+
+.focus {
+  background-color: lightgreen;
 }
