@@ -154,6 +154,17 @@ class Game extends React.Component {
     return null;
   }
 
+  calculateDraw(squares) {
+    if (this.state.winner) {
+      return;
+    }
+    for (let i = squares.length - 1; i >= 0; i--) {
+      if (!squares[i]) {
+        return true;
+      }
+    }
+  }
+
   render() {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
@@ -180,6 +191,8 @@ class Game extends React.Component {
     let status;
     if (winner) {
       status = "Выиграл " + winner;
+    } else if (!this.calculateDraw(current.squares)) {
+      status = "Ничья";
     } else {
       status = "Следующий ход: " + (this.state.xIsNext ? "X" : "O");
     }
