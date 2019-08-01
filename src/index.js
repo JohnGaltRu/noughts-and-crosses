@@ -15,35 +15,27 @@ function Square(props) {
 //All values and handlers we will keep in the parent`s state to have one source for the game
 //and for the additional options.
 class Board extends React.Component {
-  renderSquare(i) {
-    return (
-      <Square
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
-      />
-    );
+
+  createSquares(rows, columns) {
+    let rowsArr = [];
+    for (let x = 0; x < rows; x++) {
+      let squaresArr = [];
+      for (let y = 0; y < columns; y++) {
+        squaresArr.push(
+          <Square
+            key={`cell#${columns * x + y}`}
+            value={this.props.squares[columns * x + y]}
+            onClick={() => this.props.onClick(columns * x + y)}
+          />
+        );
+      }
+      rowsArr.push(<div key={`row#${x}`} className="board-row">{squaresArr}</div>);
+    }
+    return rowsArr;
   }
 
   render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
+    return this.createSquares(3, 3);
   }
 }
 
@@ -74,11 +66,11 @@ class Game extends React.Component {
     const squares = current.squares.slice();
     const stepButtons = this.state.stepButtons.slice(0, this.state.stepNumber + 1);
 
-    //If a player clicks on a cell in which there is already a value - highlights the button containing that move  
+    //If a player clicks on a cell in which there is already a value - highlights the button containing that move
     if (squares[i]) {
       focusStepButton(stepButtons, i);
       this.setState({ stepButtons: stepButtons });
-      return
+      return;
     } else {
       resetStepButtons(stepButtons);
       this.setState({ stepButtons: stepButtons });
