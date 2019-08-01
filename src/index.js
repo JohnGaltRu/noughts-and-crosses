@@ -5,7 +5,7 @@ import "./index.css";
 //This is an element creating table cell
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className={props.className} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -15,7 +15,6 @@ function Square(props) {
 //All values and handlers we will keep in the parent`s state to have one source for the game
 //and for the additional options.
 class Board extends React.Component {
-
   createSquares(rows, columns) {
     let rowsArr = [];
     for (let x = 0; x < rows; x++) {
@@ -26,10 +25,15 @@ class Board extends React.Component {
             key={`cell#${columns * x + y}`}
             value={this.props.squares[columns * x + y]}
             onClick={() => this.props.onClick(columns * x + y)}
+            className={this.props.className[columns * x + y]}
           />
         );
       }
-      rowsArr.push(<div key={`row#${x}`} className="board-row">{squaresArr}</div>);
+      rowsArr.push(
+        <div key={`row#${x}`} className="board-row">
+          {squaresArr}
+        </div>
+      );
     }
     return rowsArr;
   }
@@ -56,7 +60,9 @@ class Game extends React.Component {
           squareID: null,
           focus: ""
         }
-      ]
+      ],
+      winner: null,
+      squareClasses: Array(9).fill("square")
     };
   }
 
@@ -77,7 +83,7 @@ class Game extends React.Component {
     }
 
     //Blocks clickhandler if game has already ended
-    if (calculateWinner(squares)) {
+    if (this.state.winner) {
       return;
     }
     //Push new {squares: array} containing 'x' or 'o' in the certain cell to history array
@@ -100,22 +106,65 @@ class Game extends React.Component {
     });
   }
 
-  //This is for buttons that change the moment of the game
+  //This is for step buttons that change the moment of the game.
   jumpTo(step) {
     this.setState({
       stepNumber: step,
-      xIsNext: step % 2 === 0
+      xIsNext: step % 2 === 0,
+      winner: null,
+      squareClasses: Array(9).fill("square")
     });
   }
 
+  /* This function checks if there are three values of "x" or "o" in a row or column.
+  It takes last history array as an attribute and searches equal 'x' or 'o' values in certain cells.
+  And if it find - it sets winner to the state and also adds extra class 'winner' which pass with props
+  to the Sqare component.
+  */
+  calculateWinner(squares) {
+    if (!this.state.winner) {
+      const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+      for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (
+          squares[a] &&
+          squares[a] === squares[b] &&
+          squares[a] === squares[c]
+        ) {
+          const squareClasses = this.state.squareClasses.slice();
+          squareClasses[a] = squareClasses[b] = squareClasses[c] =
+            "square winner";
+          this.setState({
+            squareClasses: squareClasses,
+            winner: squares[a]
+          });
+          return;
+        }
+      }
+    }
+    return null;
+  }
+
   render() {
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winner = this.state.winner;
     const stepButtons = this.state.stepButtons;
 
+    this.calculateWinner(current.squares);
+
+    //For rendering step buttons
     const moves = history.map((step, move) => {
-      const desc = move ? "Перейти к ходу #" + move : "К началу игры";
+      const desc = move ? `Перейти к ходу #${move}` : "К началу игры";
       return (
         <li key={move}>
           <button
@@ -138,7 +187,11 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={i => this.handleClick(i)} />
+          <Board
+            squares={current.squares}
+            onClick={i => this.handleClick(i)}
+            className={this.state.squareClasses}
+          />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -148,29 +201,6 @@ class Game extends React.Component {
     );
   }
 }
-
-// This function checks if there are three values of "x" or "o" in a row or column.
-// It takes last history array as an attribute and searches equal 'x' or 'o' values in certain cells.
-// And if find - return it value.
-const calculateWinner = squares => {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-};
 
 const focusStepButton = (stepButtons, i) => {
   for (let x = stepButtons.length - 1; x >= 0; x--) {
