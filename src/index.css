@@ -1,35 +1,70 @@
+@font-face {
+  font-family: Gilroy-Light;
+  src: local("Gilroy-Light"), url("Gilroy-Light.otf") format("OpenType"); }
+
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+  font-family: Gilroy-Light, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
 }
 
-ol, ul {
-  padding-left: 30px;
+*{ box-sizing: border-box;  }
+
+#root{
+  padding: 50px 0px;
+  display: flex;
+  justify-content: center;
 }
 
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
+.game {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0px auto; 
+}
+
+.game-board{
+  padding-top: 30px;
 }
 
 .status {
-  margin-bottom: 10px;
+  font-size: 18.5px;
+  background-color: lightblue;
+  width: 200px;
+  text-align: center;
+  transform: skewX(-15deg);
+  line-height: 2em;
+  font-family: Gilroy-Light;
+  letter-spacing: 0.1em;
 }
 
 .square {
   background: #fff;
-  border: 1px solid #999;
+  border: 2px solid #E5EDE2;
   float: left;
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
   line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
+  height: 70px;
+  margin-right: -2px;
+  margin-top: -2px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 70px;
+  cursor: pointer;
+}
+
+.board-row::after{
+  content: "";
+  width: 100%;
+  height: 0px;
+}
+
+.square:hover{
+  background: #EDDDC6;
 }
 
 .square:focus {
@@ -40,14 +75,17 @@ ol, ul {
   background: #ddd;
 }
 
-.game {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+.game-info {
+  padding-top: 30px;
 }
 
-.game-info {
-  margin-left: 20px;
+ul{ 
+  margin: 0px;
+  padding: 20px 0px 0px 0px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+
 }
 
 .focus {
@@ -56,4 +94,20 @@ ol, ul {
 
 .winner{
   background: lightgreen;
+}
+
+ul button {
+  outline: none;
+  border: 2px solid #E5EDE2;
+  background-color: transparent;
+  font-size: 18px;
+  margin-top: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-family: Gilroy-Light;
+  letter-spacing: 0.1em;
+}
+
+ul button:hover{
+  background: #EDDDC6;
 }
