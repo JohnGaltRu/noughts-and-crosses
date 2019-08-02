@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/noughts-and-crosses/static/css/main.fba0cf7b.chunk.css",
+    "main.js": "/noughts-and-crosses/static/js/main.36c4e04b.chunk.js",
+    "main.js.map": "/noughts-and-crosses/static/js/main.36c4e04b.chunk.js.map",
+    "runtime~main.js": "/noughts-and-crosses/static/js/runtime~main.2782f76b.js",
+    "runtime~main.js.map": "/noughts-and-crosses/static/js/runtime~main.2782f76b.js.map",
+    "static/js/2.56cb80cd.chunk.js": "/noughts-and-crosses/static/js/2.56cb80cd.chunk.js",
+    "static/js/2.56cb80cd.chunk.js.map": "/noughts-and-crosses/static/js/2.56cb80cd.chunk.js.map",
+    "index.html": "/noughts-and-crosses/index.html",
+    "precache-manifest.2d1bb16bc5eac08f50dd1e9b54544a7f.js": "/noughts-and-crosses/precache-manifest.2d1bb16bc5eac08f50dd1e9b54544a7f.js",
+    "service-worker.js": "/noughts-and-crosses/service-worker.js",
+    "static/css/main.fba0cf7b.chunk.css.map": "/noughts-and-crosses/static/css/main.fba0cf7b.chunk.css.map",
+    "static/media/index.css": "/noughts-and-crosses/static/media/Gilroy-Light.c62aded7.otf"
+  }
+}
